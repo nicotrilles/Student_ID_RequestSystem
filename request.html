@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aces Polytechnic - Track ID Request</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="request.css">
+</head>
+<body>
+
+<div class="track-container">
+    <div class="track-box">
+        <div class="header">
+            <img src="photo/acespicture-modified (1).png" class="logo" alt="Logo">
+            <h1>Track Your ID Request</h1>
+            <p>Enter your Tracking Number and Student ID to check status</p>
+        </div>
+
+        <form id="trackForm">
+            <div class="input-group">
+                <label>Tracking Number <span class="required">*</span></label>
+                <input type="text" id="trackingNumber" placeholder="e.g. REQ-20260329-00123" required>
+            </div>
+
+            <div class="input-group">
+                <label>Student ID Number <span class="required">*</span></label>
+                <input type="text" id="studentId" placeholder="e.g. 140123" required>
+            </div>
+
+            <!-- href="checkStatus.html" -->
+            <button type="submit" class="track-btn">
+                <i class="fas fa-search"></i> Check Status
+            </button>
+
+            <a href="index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </form>
+
+        <!-- Result Area (Hidden initially) -->
+        <div id="result" class="result-area" style="display: none;">
+            <h3>Request Status</h3>
+            <div class="status-card">
+                <div id="statusIcon" class="status-icon"></div>
+                <div class="status-details">
+                    <p><strong>Tracking Number:</strong> <span id="displayTracking"></span></p>
+                    <p><strong>Student ID:</strong> <span id="displayStudentId"></span></p>
+                    <p><strong>Status:</strong> <span id="statusText" class="status-text"></span></p>
+                    <p><strong>Date Submitted:</strong> <span id="submitDate"></span></p>
+                    <p id="adminComment"></p>
+                </div>
+            </div>
+            <button onclick="window.location.reload()" class="new-search-btn">
+                Check Another Request
+            </button>
+        </div>
+
+        <div class="footer-link">
+            <!-- <p>Have an account? <a href="loginform.html">Back to Login</a></p> -->
+            <p>Don't have a tracking number? <a href="requestForm.html">Submit a request</a></p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const savedRequest = JSON.parse(localStorage.getItem('lastIdRequest') || 'null');
+
+    if (savedRequest) {
+        document.getElementById('trackingNumber').value = savedRequest.trackingNumber || '';
+        document.getElementById('studentId').value = savedRequest.studentId || '';
+    }
+
+    document.getElementById('trackForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const trackingNum = document.getElementById('trackingNumber').value.trim();
+        const studentId = document.getElementById('studentId').value.trim();
+
+        if (!trackingNum || !studentId) {
+            alert("Please fill in both fields.");
+            return;
+        }
+
+        if (!savedRequest) {
+            alert("No saved request found. Please submit a request first.");
+            window.location.href = 'requestForm.html';
+            return;
+        }
+
+        if (trackingNum === savedRequest.trackingNumber && studentId === savedRequest.studentId) {
+            localStorage.setItem('currentRequestCheck', JSON.stringify({
+                ...savedRequest,
+                status: savedRequest.status || 'Pending'
+            }));
+            window.location.href = 'checkStatus.html';
+        } else {
+            alert("Tracking number or Student ID is incorrect. Please check your values and try again.");
+        }
+    });
+</script>
+
+</body>
+</html>

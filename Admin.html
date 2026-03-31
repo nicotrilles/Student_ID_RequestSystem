@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aces Polytechnic College - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="Admin.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="photo/acespicture-modified (1).png" class="logo" alt="Logo">
+            <h3>Aces Polytechnic</h3>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="#"><i class="fas fa-id-card"></i> Request ID Card</a>
+            <a href="#"><i class="fas fa-history"></i>Requests</a>
+            <a href="#"><i class="fas fa-bell"></i> Notifications</a>
+            <a href="#"><i class="fas fa-user"></i> Profile</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="loginform.html" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="welcome">
+                <h1>Welcome back, <span id="studentName">Admin</span>!</h1>
+                <p>Admin: <strong>Lvl. 99</strong></p>
+            </div>
+
+            <div class="header-actions">
+                <button class="new-request-btn" onclick="window.location.href='notifications.html'">
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="content-area">
+
+            <!-- Status Cards -->
+            <div class="cards-grid">
+                <div class="status-card">
+                    <div class="card-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Pending Requests</h3>
+                        <h2>1</h2>
+                        <p>Your request is under review</p>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="card-icon approved">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Approved</h3>
+                        <h2>0</h2>
+                        <p>Ready for printing</p>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="card-icon completed">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Rejected</h3>
+                        <h2>0</h2>
+                        <p>Rejected IDs</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="section">
+                <h2>Recent Requests</h2>
+                    
+                
+
+
+
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h2>Quick Actions</h2>
+                <div class="actions-grid">
+                    <button onclick="window.location.href='idRequest.html'" class="action-btn">
+                        <i class="fas fa-id-card"></i>
+                        <span>Request New ID</span>
+                    </button>
+                    <button onclick="window.location.href='allRequests.html'" class="action-btn">
+                        <i class="fas fa-history"></i>
+                        <span>View All Requests</span>
+                    </button>
+                    <button onclick="window.location.href='notifications.html'" class="action-btn">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// You can make this dynamic later with real student data
+document.getElementById('studentName').textContent = "Admin";
+</script>
+
+</body>
+</html>
