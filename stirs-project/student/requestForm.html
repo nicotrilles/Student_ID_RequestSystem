@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aces Polytechnic College - ID Request</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="requestForm.css">
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <img src="../photo/acespicture-modified (1).png" class="logo" alt="Logo">
+            <h2>Student ID Request</h2>
+        </div>
+        <div class="header-right">
+            <a href="request.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </header>
+
+    <div class="main-content">
+
+        <!-- Form Section -->
+        <div id="requestFormSection" class="form-container">
+            <h1>New / Replacement Student ID Request</h1>
+            <p class="subtitle">Please fill out the form below. All fields marked * are required.</p>
+
+            <form id="idRequestForm">
+
+                <!-- Request Type -->
+                <div class="form-group">
+                    <label>Request Type <span class="required">*</span></label>
+                    <select id="requestType" required>
+                        <option value="">Select Request Type</option>
+                        <option value="new">New</option>
+                        <option value="renewal">Renewal</option>
+                        <option value="replacement">Replacement (Lost / Damaged)</option>
+                        <option value="expiry">Expiry</option>
+                    </select>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Student ID Number <span class="required">*</span></label>
+                            <input type="text" id="studentId" placeholder="e.g. 140123" pattern="140[0-9]{3}" title="Please check your ID in the school permit" required>
+                            <span id="studentIdHint" style="display:none;color:#d9534f;font-size:0.95rem;margin-top:5px;">Please check your ID in the school permit</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" placeholder="First, Middle, Last Name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Select Department <span class="required">*</span></label>
+                            <input type="text" id="course" placeholder="e.g. BS Information Technology" required>
+                        </div>
+                            <div class="form-group">
+                            <label>Year Level <span class="required">*</span></label>
+                            <select id="yearLevel" required>
+                                <option value="" disabled selected>Select Year</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="form-section">
+                    <h3>Contact Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email Address <span class="required">*</span></label>
+                            <input type="email" id="email" placeholder="yourname@aces.edu.ph" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Number <span class="required">*</span></label>
+                            <input type="tel" id="contact" placeholder="09XXXXXXXXX" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ID Photo -->
+                <div class="form-section">
+                    <h3>ID Photo Upload <span class="required">*</span></h3>
+                    <div class="upload-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Upload recent passport-size photo (2x2)</p>
+                        <p class="small">White background • JPG or PNG • Max 5MB</p>
+                        <input type="file" id="photoUpload" accept="image/jpeg, image/png" required>
+                    </div>
+                </div>
+
+                <!-- Reason -->
+                <div class="form-group">
+                    <label>Reason for Request <span class="required">*</span></label>
+                    <textarea id="reason" rows="3" placeholder="e.g. First time requesting ID, Lost my previous ID..." required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Submit ID Request
+                </button>
+            </form>
+        </div>
+
+        <!-- Success / Tracking Section (Hidden initially) -->
+        <div id="successSection" class="success-container" style="display: none;">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1>Request Submitted Successfully!</h1>
+            <p class="success-subtitle">Your Student ID request has been received and is pending admin approval.</p>
+
+            <div class="tracking-box">
+                <p><strong>Your Tracking Number:</strong></p>
+                <div class="tracking-number" id="trackingNumberDisplay">REQ-20260329-00123</div>
+
+                <p class="save-note">Please save this tracking number. You will need it to check your request status later.</p>
+            </div>
+
+            <div class="action-buttons">
+                <a href="checkStatus.html" class="track-btn">
+                    <i class="fas fa-search"></i> Track My Request Status
+                </a>
+
+                <a href="adminLogin.html" class="login-btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i> Go to Login
+                </a>
+            </div>
+
+            <p class="note">A confirmation email has been sent to your registered email address.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('idRequestForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Capture ALL fields
+    const requestData = {
+        fullName: document.getElementById('fullName').value,
+        studentId: document.getElementById('studentId').value,
+        course: document.getElementById('course').value,
+        yearLevel: document.getElementById('yearLevel').value, // New
+        requestType: document.getElementById('requestType').value,
+        reason: document.getElementById('reason').value,
+        submittedAt: new Date().toLocaleDateString(),
+        status: 'Pending',
+        adminComment: '' // Initialize empty comment
+    };
+
+    // Generate tracking number
+    const year = new Date().getFullYear();
+    const randomNum = Math.floor(10000 + Math.random() * 90000);
+    requestData.trackingNumber = `REQ-${year}-${randomNum}`;
+
+    // SAVE THE COMPLETE OBJECT
+    localStorage.setItem('lastIdRequest', JSON.stringify(requestData));
+
+    document.getElementById('trackingNumberDisplay').textContent = requestData.trackingNumber;
+    document.getElementById('requestFormSection').style.display = 'none';
+    document.getElementById('successSection').style.display = 'block';
+});
+
+        // Show tracking number
+        document.getElementById('trackingNumberDisplay').textContent = trackingNumber;
+
+        // Hide form and show success section
+        document.getElementById('requestFormSection').style.display = 'none';
+        document.getElementById('successSection').style.display = 'block';
+
+        // Optional: Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+
+    document.getElementById('studentId').addEventListener('input', function() {
+        const studentIdHint = document.getElementById('studentIdHint');
+        const idPattern = /^140\d{3}$/;
+        if (idPattern.test(this.value.trim())) {
+            studentIdHint.style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

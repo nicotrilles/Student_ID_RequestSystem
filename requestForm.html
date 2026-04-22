@@ -28,22 +28,35 @@
 
         <!-- Form Section -->
         <div id="requestFormSection" class="form-container">
-            <h1>New / Replacement Student ID Request</h1>
+            <h1>Student ID Request</h1>
             <p class="subtitle">Please fill out the form below. All fields marked * are required.</p>
 
             <form id="idRequestForm">
 
-                <!-- Request Type -->
-                <div class="form-group">
-                    <label>Request Type <span class="required">*</span></label>
-                    <select id="requestType" required>
-                        <option value="">Select Request Type</option>
-                        <option value="new">New</option>
-                        <option value="renewal">Renewal</option>
-                        <option value="replacement">Replacement (Lost / Damaged)</option>
-                        <option value="expiry">Expiry</option>
-                    </select>
-                </div>
+                    <div class="form-section">
+                        <h3>Request Information</h3>
+                        <div class="form-row">
+                            <!-- Request Type -->
+                            <div class="form-group">
+                                <label>Request Type <span class="required">*</span></label>
+                                <select id="requestType" required>
+                                    <option value="" disabled selected hidden>Select Request Type</option>
+                                    <option value="new">        New     </option>
+                                    <option value="replacement">Lost    </option>
+                                    <option value="damaged">    Damaged </option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Student Status<span class="required">*</span></label>
+                                <select id="class" required>
+                                    <option value="" disabled selected hidden>Select Student Status</option>
+                                    <option value="1styear">Regualar</option>
+                                    <option value="2ndyear">Irregular</option>   
+                                </select>
+                            </div>
+                        </div>    
+                    </div>    
 
                 <!-- Personal Information -->
                 <div class="form-section">
@@ -51,24 +64,45 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>Student ID Number <span class="required">*</span></label>
-                            <input type="text" id="studentId" placeholder="e.g. 140123" pattern="140[0-9]{3}" title="Please check your ID in the school permit" required>
+                            <input type="text" id="studentId" 
+                            placeholder="e.g. 140123" 
+                            pattern="^1[0-9]{5}$"
+                            maxlength="6"
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            title="Please check your ID in the school permit" required>
                             <span id="studentIdHint" style="display:none;color:#d9534f;font-size:0.95rem;margin-top:5px;">Please check your ID in the school permit</span>
                         </div>
+
                         <div class="form-group">
                             <label>Full Name <span class="required">*</span></label>
                             <input type="text" id="fullName" placeholder="First, Middle, Last Name" required>
                         </div>
+
+                        <div class="form-group">
+                            <label>Birthdate <span class="required">*</span></label>
+                            <input type="date" id="birthdate" required>
+                        </div>
+
+
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label>Select Department <span class="required">*</span></label>
-                            <input type="text" id="course" placeholder="e.g. BS Information Technology" required>
+                            <select  id="department" required>
+                                <option value="" disabled selected hidden>Select Department                             </option>
+                                <option value="bsit">   Bachelor of Science in Information Technology                   </option>
+                                <option value="bsab">   Bachelor of Science in Agribusiness                             </option>
+                                <option value="bshm">   Bachelor of Science in Hospitality Management                   </option>
+                                <option value="btvted"> Bachelor of Science in Technical-Vocational Teacher Education   </option>
+                                <option value="bscrim"> Bachelor of Science in Criminology                              </option>
+                            </select>
                         </div>
+
                         <div class="form-group">
                             <label>Year Level <span class="required">*</span></label>
                             <select id="yearLevel" required>
-                                <option value="">Select Year</option>
+                                <option value="" disabled selected hidden>Select Year Level</option>
                                 <option value="1">1st Year</option>
                                 <option value="2">2nd Year</option>
                                 <option value="3">3rd Year</option>
@@ -83,13 +117,76 @@
                     <h3>Contact Information</h3>
                     <div class="form-row">
                         <div class="form-group">
-                            <label>Email Address <span class="required">*</span></label>
-                            <input type="email" id="email" placeholder="yourname@aces.edu.ph" required>
+                            <label> Address <span class="required">*</span></label>
+                            <input type="text" id="address" placeholder="Complete Address" required>
                         </div>
                         <div class="form-group">
                             <label>Contact Number <span class="required">*</span></label>
-                            <input type="tel" id="contact" placeholder="09XXXXXXXXX" required>
+                            <input type="tel" 
+                            id="contact" 
+                            placeholder="09*********" 
+                            pattern="^09\d{9}" 
+                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                            maxlength="11" required>
                         </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>In Case of Emergency</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Emergency Contact Name <span class="required">*</span></label>
+                            <input type="text" id="emergencyName" placeholder="Full Name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label> Address <span class="required">*</span></label>
+                            <input type="text" id="address" placeholder="Complete Address" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Emergency Contact Number <span class="required">*</span></label>
+                            <input type="tel"
+                             id="emergencyContact" 
+                             placeholder="09*********" 
+                             pattern="^09\d{9}"
+                             oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                             maxlength="11" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>Signature <i class="fas fa-signature"></i> <span class="required">*</span></h3>
+
+                    <!-- OPTION SELECT -->
+                    <div class="form-group">
+                        <label>Choose Signature Method</label>
+                        <select id="signatureMethod" required>
+                            <option value="" disabled selected hidden>Select Method</option>
+                            <option value="draw">Draw Signature</option>
+                            <option value="upload">Upload Image</option>
+                        </select>
+                    </div>
+
+                    <!-- DRAW AREA -->
+                    <div id="drawArea" class="upload-area" style="display:none;">
+                        <canvas id="signature-pad" width="400" height="150" style="border:1px solid #ccc;"></canvas>
+                        <button type="button" onclick="clearCanvas()">Clear</button>
+                    </div>
+
+                    <!-- UPLOAD AREA -->
+                    <div id="uploadArea" class="upload-area" style="display:none;">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Upload your signature image</p>
+                        <input type="file" id="signatureUpload" accept="image/png, image/jpeg">
+                    </div>
+
+                    <!-- PREVIEW -->
+                    <div id="signaturePreview" style="margin-top:15px; display:none;">
+                        <p><strong>Preview:</strong></p>
+                        <img id="previewImg" style="max-width:200px; border:1px solid #ccc; border-radius:8px;">
                     </div>
                 </div>
 
@@ -106,7 +203,7 @@
 
                 <!-- Reason -->
                 <div class="form-group">
-                    <label>Reason for Request <span class="required">*</span></label>
+                    <label>Reason for Request</label>
                     <textarea id="reason" rows="3" placeholder="e.g. First time requesting ID, Lost my previous ID..." required></textarea>
                 </div>
 
@@ -136,9 +233,9 @@
                     <i class="fas fa-search"></i> Track My Request Status
                 </a>
 
-                <a href="adminLogin.html" class="login-btn-secondary">
+                <!-- <a href="adminLogin.html" class="login-btn-secondary">
                     <i class="fas fa-sign-in-alt"></i> Go to Login
-                </a>
+                </a> -->
             </div>
 
             <p class="note">A confirmation email has been sent to your registered email address.</p>
@@ -147,52 +244,200 @@
 </div>
 
 <script>
-    document.getElementById('idRequestForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+document.getElementById('idRequestForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-        const studentIdInput = document.getElementById('studentId');
-        const studentId = studentIdInput.value.trim();
-        const studentIdHint = document.getElementById('studentIdHint');
-        const idPattern = /^140\d{3}$/;
+    const studentIdInput = document.getElementById('studentId');
+    const studentId = studentIdInput.value.trim();
+    const studentIdHint = document.getElementById('studentIdHint');
+    const idPattern = /^1\d{5}$/;
 
-        if (!idPattern.test(studentId)) {
-            studentIdHint.style.display = 'block';
-            studentIdInput.focus();
-            return;
-        }
+    if (!idPattern.test(studentId)) {
+        studentIdHint.style.display = 'block';
+        studentIdInput.focus();
+        return;
+    }
 
-        studentIdHint.style.display = 'none';
+    studentIdHint.style.display = 'none';
 
-        // Generate a realistic tracking number
+    // 📸 Convert photo to Base64
+    const photoFile = document.getElementById('photoUpload').files[0];
+
+    if (!photoFile) {
+        alert("Please upload a photo.");
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function() {
+
+        // ✍️ Capture signature
+        const signatureData = canvas.toDataURL();
+
+        // 🧠 COMPLETE DATA (MERGED OLD + NEW)
+        const requestData = {
+            trackingNumber: '',
+            fullName: document.getElementById('fullName').value,
+            studentId: studentId,
+            birthdate: document.getElementById('birthdate').value,
+
+            // NEW FIELDS
+            requestType: document.getElementById('requestType').value,
+            sinceYear: document.getElementById('sinceYear').value,
+            studentStatus: document.getElementById('class').value,
+            semester: document.getElementById('semester').value,
+
+            department: document.getElementById('department').value,
+            yearLevel: document.getElementById('yearLevel').value,
+
+            address: document.getElementById('address').value,
+            contact: document.getElementById('contact').value,
+
+            emergencyName: document.getElementById('emergencyName').value,
+            emergencyContact: document.getElementById('emergencyContact').value,
+
+            reason: document.getElementById('reason').value,
+
+            // FILES
+            photo: reader.result,
+            signature: signatureData,
+
+            // SYSTEM
+            submittedAt: new Date().toLocaleString(),
+            status: 'Pending',
+            adminComment: ''
+        };
+
+        // 🔢 Generate tracking number
         const year = new Date().getFullYear();
         const randomNum = Math.floor(10000 + Math.random() * 90000);
-        const trackingNumber = `REQ-${year}${String(new Date().getMonth()+1).padStart(2,'0')}${String(new Date().getDate()).padStart(2,'0')}-${randomNum}`;
+        requestData.trackingNumber = `REQ-${year}-${randomNum}`;
 
-        localStorage.setItem('lastIdRequest', JSON.stringify({
-            trackingNumber,
-            studentId,
-            submittedAt: new Date().toLocaleDateString(),
-            status: 'Pending'
-        }));
+        // 📦 SAVE TO ARRAY (FIXED)
+        let allRequests = JSON.parse(localStorage.getItem('allIdRequests') || '[]');
+        allRequests.unshift(requestData);
 
-        // Show tracking number
-        document.getElementById('trackingNumberDisplay').textContent = trackingNumber;
+        localStorage.setItem('allIdRequests', JSON.stringify(allRequests));
 
-        // Hide form and show success section
+        // keep compatibility
+        localStorage.setItem('lastIdRequest', JSON.stringify(requestData));
+
+        // 🎉 UI SUCCESS
+        document.getElementById('trackingNumberDisplay').textContent = requestData.trackingNumber;
         document.getElementById('requestFormSection').style.display = 'none';
         document.getElementById('successSection').style.display = 'block';
 
-        // Optional: Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+    };
 
-    document.getElementById('studentId').addEventListener('input', function() {
-        const studentIdHint = document.getElementById('studentIdHint');
-        const idPattern = /^140\d{3}$/;
-        if (idPattern.test(this.value.trim())) {
-            studentIdHint.style.display = 'none';
-        }
-    });
+    reader.readAsDataURL(photoFile);
+});
+
+// 🔍 Student ID live validation
+document.getElementById('studentId').addEventListener('input', function() {
+    const studentIdHint = document.getElementById('studentIdHint');
+    const idPattern = /^1\d{5}$/;
+
+    if (idPattern.test(this.value.trim())) {
+        studentIdHint.style.display = 'none';
+    }
+});
+
+// ✍️ SIGNATURE PAD
+const canvas = document.getElementById('signature-pad');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+
+canvas.addEventListener('mousedown', () => drawing = true);
+
+canvas.addEventListener('mouseup', () => {
+    drawing = false;
+    ctx.beginPath();
+});
+
+canvas.addEventListener('mousemove', draw);
+
+function draw(e) {
+    if (!drawing) return;
+
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000';
+
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+}
+
+// Clear signature pad wheter draw or upload is selected
+
+const methodSelect = document.getElementById('signatureMethod');
+const drawArea = document.getElementById('drawArea');
+const uploadArea = document.getElementById('uploadArea');
+const preview = document.getElementById('signaturePreview');
+const previewImg = document.getElementById('previewImg');
+
+methodSelect.addEventListener('change', function () {
+    preview.style.display = 'none';
+
+    if (this.value === 'draw') {
+        drawArea.style.display = 'block';
+        uploadArea.style.display = 'none';
+    } else if (this.value === 'upload') {
+        drawArea.style.display = 'none';
+        uploadArea.style.display = 'block';
+    }
+});
+
+document.getElementById('signatureUpload').addEventListener('change', function () {
+    const file = this.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function () {
+        previewImg.src = reader.result;
+        preview.style.display = 'block';
+    };
+
+    reader.readAsDataURL(file);
+});
+
+let signatureData = '';
+
+if (methodSelect.value === 'draw') {
+    signatureData = canvas.toDataURL();
+    previewImg.src = signatureData;
+    preview.style.display = 'block';
+}
+
+if (methodSelect.value === 'upload') {
+    const file = document.getElementById('signatureUpload').files[0];
+
+    if (!file) {
+        alert("Please upload a signature.");
+        return;
+    }
+
+    const reader2 = new FileReader();
+
+    reader2.onload = function () {
+        signatureData = reader2.result;
+
+        // continue saving AFTER this loads
+        saveRequest(signatureData);
+    };
+
+    reader2.readAsDataURL(file);
+    return; // stop normal flow
+}
+
+function saveRequest(signatureData) {
+    // your existing requestData code
+}
 </script>
 
 </body>
