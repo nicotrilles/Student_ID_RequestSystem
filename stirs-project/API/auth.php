@@ -12,7 +12,8 @@ header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 session_start();
-require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/../config/db.php';
+// require_once __DIR__ . '/db.php';
 
 $action = $_GET['action'] ?? '';
 

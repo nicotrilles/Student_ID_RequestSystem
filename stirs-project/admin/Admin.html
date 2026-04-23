@@ -515,31 +515,86 @@ window.addEventListener('load', async () => {
     updateBadge();
 });
 
+
+async function loadData() {
+    try {
+        // Try PHP API — returns JSON array of all requests
+        const res  = await fetch('../api/requests.php?action=list&status=all&q=');
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+            // ✅ PHP responded with real data
+            _allData = data.map(normaliseDB);   // normalise DB column names
+            _mode    = 'db';
+            return;
+        }
+        throw new Error('Not an array');
+
+    } catch (_) {
+        // ── Fallback: read from localStorage ───────────────────
+        _mode    = 'localStorage';
+        const raw  = JSON.parse(localStorage.getItem('allIdRequests') || '[]');
+        _allData = raw.map(normaliseLS);  // normalise localStorage key names
+    }
+}
+
+// ── normaliseDB: maps DB column names → your app's field names ──
+function normaliseDB(r) {
+    return {
+        _id:            r.id,                    // DB primary key for decide action
+        _mode:          'db',
+        trackingNumber: r.tracking_number,      // snake_case → camelCase
+        studentId:      r.student_id,
+        fullName:       r.full_name,
+        department:     r.department,
+        requestType:    r.request_type,
+        status:         r.status || 'Pending',
+        adminComment:   r.admin_comment || '',
+        submittedAt:    r.submitted_at,
+    };
+}
+
+// ── normaliseLS: localStorage keys are already camelCase ────────
+function normaliseLS(r) {
+    return {
+        _id:            r.trackingNumber,   // no DB id, use tracking as key
+        _mode:          'localStorage',
+        trackingNumber: r.trackingNumber,
+        studentId:      r.studentId,
+        fullName:       r.fullName,
+        department:     r.department,
+        requestType:    r.requestType,
+        status:         r.status || 'Pending',
+        adminComment:   r.adminComment || '',
+        submittedAt:    r.submittedAt,
+    };
+}
+
 /* ══════════════════════════════════
    DATA LAYER
    Tries PHP API → falls back to localStorage
 ══════════════════════════════════ */
-async function loadData() {
-    try {
-        const res  = await fetch(API + '?action=list&status=all&q=');
-        const data = await res.json();
-        if (Array.isArray(data)) {
-            _allData    = data.map(normaliseDB);
-            _activeMode = 'db';
-            return;
-        }
-    } catch (_) {}
+// async function loadData() {
+//     try {
+//         const res  = await fetch(API + '?action=list&status=all&q=');
+//         const data = await res.json();
+//         if (Array.isArray(data)) {
+//             _allData    = data.map(normaliseDB);
+//             _activeMode = 'db';
+//             return;
+//         }
+//     } catch (_) {}
 
-    // localStorage fallback
-    _activeMode = 'ls';
-    const raw   = JSON.parse(localStorage.getItem('allIdRequests') || '[]');
-    const legacy = JSON.parse(localStorage.getItem('lastIdRequest') || 'null');
-    if (legacy) {
-        const exists = raw.find(r => r.trackingNumber === legacy.trackingNumber);
-        if (!exists) raw.unshift(legacy);
-    }
-    _allData = raw.map(normaliseLS);
-}
+//     // localStorage fallback
+//     _activeMode = 'ls';
+//     const raw   = JSON.parse(localStorage.getItem('allIdRequests') || '[]');
+//     const legacy = JSON.parse(localStorage.getItem('lastIdRequest') || 'null');
+//     if (legacy) {
+//         const exists = raw.find(r => r.trackingNumber === legacy.trackingNumber);
+//         if (!exists) raw.unshift(legacy);
+//     }
+//     _allData = raw.map(normaliseLS);
+// }
 
 function normaliseDB(r) {
     return {
@@ -596,29 +651,70 @@ function normaliseLS(r) {
 }
 
 async function saveDecision(id, mode, status, comment) {
+
     if (mode === 'db') {
-        await fetch(API + '?action=decide', {
-            method: 'POST',
+        // ── DB MODE: POST to decide endpoint ─────────────────
+        // id here is the MySQL primary key (integer)
+        await fetch('../api/requests.php?action=decide', {
+            method:  'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, status, adminComment: comment })
+            body:    JSON.stringify({
+                id:           id,         // MySQL row id
+                status:       status,     // 'Approved' or 'Rejected'
+                adminComment: comment,    // rejection reason (or '')
+            }),
         });
+
     } else {
-        // localStorage
+        // ── localStorage MODE: update the array in-place ─────
+        // id here is the trackingNumber string
         let arr = JSON.parse(localStorage.getItem('allIdRequests') || '[]');
         const idx = arr.findIndex(r => r.trackingNumber === id);
+
         if (idx !== -1) {
             arr[idx].status       = status;
             arr[idx].adminComment = comment;
         }
+
         localStorage.setItem('allIdRequests', JSON.stringify(arr));
-        // update last
-        if (arr[0]) localStorage.setItem('lastIdRequest', JSON.stringify(arr[0]));
+        // Sync the lastIdRequest key so student tracking page stays current
+        if (arr.length > 0)
+            localStorage.setItem('lastIdRequest', JSON.stringify(arr[0]));
     }
 
-    // Update local cache immediately
-    const rec = _allData.find(r => r._id == id);
-    if (rec) { rec.status = status; rec.adminComment = comment; }
+    // ── Update local cache regardless of source ───────────
+    // This prevents a full reload to reflect the change
+    const rec = _allData.find(r => String(r._id) === String(id));
+    if (rec) {
+        rec.status       = status;
+        rec.adminComment = comment;
+    }
 }
+
+// async function saveDecision(id, mode, status, comment) {
+//     if (mode === 'db') {
+//         await fetch(API + '?action=decide', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({ id, status, adminComment: comment })
+//         });
+//     } else {
+//         // localStorage
+//         let arr = JSON.parse(localStorage.getItem('allIdRequests') || '[]');
+//         const idx = arr.findIndex(r => r.trackingNumber === id);
+//         if (idx !== -1) {
+//             arr[idx].status       = status;
+//             arr[idx].adminComment = comment;
+//         }
+//         localStorage.setItem('allIdRequests', JSON.stringify(arr));
+//         // update last
+//         if (arr[0]) localStorage.setItem('lastIdRequest', JSON.stringify(arr[0]));
+//     }
+
+//     // Update local cache immediately
+//     const rec = _allData.find(r => r._id == id);
+//     if (rec) { rec.status = status; rec.adminComment = comment; }
+// }
 
 /* ══════════════════════════════════
    NAVIGATION

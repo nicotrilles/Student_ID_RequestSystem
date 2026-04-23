@@ -168,8 +168,12 @@ document.getElementById('trackForm').addEventListener('submit', async function(e
     // Try PHP API first
     try {
         const res  = await fetch(`${API}?action=track&trackingNumber=${encodeURIComponent(tn)}&studentId=${encodeURIComponent(sid)}`);
-        const data = await res.json();
-        if (data.found) found = data;
+        const text = await res.text();
+        console.log("RAW RESPONSE:", text);
+        const data = JSON.parse(text);
+        if (data && (data.found === true || data.tracking_number)) {
+            found = data;
+        }
     } catch (_) { /* PHP not running, fall through */ }
 
     // Fallback: localStorage

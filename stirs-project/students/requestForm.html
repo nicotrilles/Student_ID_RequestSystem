@@ -464,6 +464,51 @@ let drawing  = false;
 let strokes  = []; // for undo
 let lastStroke = [];
 
+// // ── STEP 1: Collect the form data into a plain object ──────
+// const payload = {
+//     requestType:      document.getElementById('requestType').value,
+//     studentStatus:    document.getElementById('studentStatus').value,
+//     studentId:        document.getElementById('studentId').value.trim(),
+//     fullName:         document.getElementById('fullName').value.trim(),
+//     birthdate:        document.getElementById('birthdate').value,
+//     department:       document.getElementById('department').value,
+//     yearLevel:        document.getElementById('yearLevel').value,
+//     address:          document.getElementById('address').value.trim(),
+//     contact:          document.getElementById('contact').value.trim(),
+//     emergencyName:    document.getElementById('emergencyName').value.trim(),
+//     emergencyAddress: document.getElementById('emergencyAddress').value.trim(),
+//     emergencyContact: document.getElementById('emergencyContact').value.trim(),
+//     reason:           document.getElementById('reason').value.trim(),
+//     photo:            photoData,      // base64 string from FileReader
+//     signature:        sigData,        // base64 PNG from canvas or upload
+// };
+
+// // ── STEP 2: Send to PHP as JSON ────────────────────────────
+// const response = await fetch(
+//     '../api/requests.php?action=submit',  // ← exact URL
+//     {
+//         method:  'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body:    JSON.stringify(payload),
+//     }
+// );
+
+// // ── STEP 3: Read the JSON response from PHP ────────────────
+// const data = await response.json();
+
+// // PHP returns: { success: true, trackingNumber: "REQ-2026-83741" }
+// //          or: { error: "some message" }
+
+// if (data.success) {
+//     // Show the tracking number to the student
+//     document.getElementById('trackingDisplay').textContent = data.trackingNumber;
+//     document.getElementById('form-panel').style.display    = 'none';
+//     document.getElementById('success-panel').style.display  = 'block';
+// } else {
+//     alert('Error: ' + data.error);
+// }
+
+
 function resizeCanvas() {
     const w = canvas.parentElement.clientWidth;
     const ratio = window.devicePixelRatio || 1;
@@ -586,6 +631,54 @@ function validateId(v)      { return /^1\d{5}$/.test(v); }
 function validatePhone(v)   { return /^09\d{9}$/.test(v); }
 
 /* ── FORM SUBMIT ── */
+
+// // ── AFTER (API-first, localStorage as fallback) ───────────
+// async function submitRequest(payload) {
+
+//     // ── TRY the real PHP API first ─────────────────────────
+//     try {
+//         const res  = await fetch('../api/requests.php?action=submit', {
+//             method:  'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body:    JSON.stringify(payload),
+//         });
+//         const data = await res.json();
+
+//         if (data.success) {
+//             // ✅ PHP worked — return the real tracking number
+//             return { ok: true, trackingNumber: data.trackingNumber, source: 'db' };
+//         }
+//         // PHP responded but with an application error — still fall through
+//         throw new Error(data.error || 'API error');
+
+//     } catch (err) {
+//         // ── FALLBACK — PHP failed (network, XAMPP off, etc.) ───
+//         // This is identical to your old localStorage-only code
+//         const year    = new Date().getFullYear();
+//         const rand    = String(Math.floor(10000 + Math.random() * 90000));
+//         const tn      = `REQ-${year}-${rand}`;
+
+//         const entry   = { ...payload, trackingNumber: tn, status: 'Pending',
+//                           submittedAt: new Date().toLocaleString() };
+//         let all       = JSON.parse(localStorage.getItem('allIdRequests') || '[]');
+//         all.unshift(entry);
+//         localStorage.setItem('allIdRequests', JSON.stringify(all));
+//         localStorage.setItem('lastIdRequest',  JSON.stringify(entry));
+
+//         return { ok: true, trackingNumber: tn, source: 'localStorage' };
+//     }
+// }
+
+// // ── Calling it (inside your form submit handler) ──────────
+// const result = await submitRequest(payload);
+
+// if (result.ok) {
+//     // Same UI update regardless of which source was used
+//     document.getElementById('trackingDisplay').textContent = result.trackingNumber;
+//     document.getElementById('form-panel').style.display   = 'none';
+//     document.getElementById('success-panel').style.display = 'block';
+// }
+
 document.getElementById('mainForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
